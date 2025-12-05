@@ -13,16 +13,20 @@ async function fetchApi() {
     const container = document.createElement("div"); //création du container pour l'input barre de recherche
     container.id = "container";
     div.appendChild(container);
+
     const searchContainer = document.createElement("div");
     searchContainer.id = "search-container";
     container.appendChild(searchContainer);
+
     const searchBar = document.createElement("input");
     searchBar.type = "text";
     searchBar.id = "search-bar";
     searchContainer.appendChild(searchBar);
+
     const resultsContainer = document.createElement("div");
     resultsContainer.id = "results";
     container.appendChild(resultsContainer);
+
     const searchButton = document.createElement("button"); // création du bouton "rechercher"
     searchButton.textContent = "Rechercher";
     searchContainer.appendChild(searchButton);
@@ -33,19 +37,24 @@ async function fetchApi() {
       for (let i = 0; i < results.length; i++) {
         //boucle pour parcourir l'API
         const liste = document.createElement("li"); // crée un élément <li> en mémoire ( pas encore inséré dans le DOM)
+        liste.classList.add("card");
+
         liste.innerHTML = `
+    <img src="${results[i].com_url_photo1}" alt="Photo arbre remarquable">
+    <div class="card-content">
       <h1>${results[i].arbres_libellefrancais}</h1>
       <h3>${results[i].com_annee_plantation}</h3>
-      <h2>${results[i].arbres_adresse}</h2>
-      <h2>${results[i].arbres_arrondissement}</h2>
-      <img src="${results[i].com_url_photo1}" alt="Photo arbre remarquable" style="width:300px; height:auto;">`;
+      <p>${results[i].arbres_adresse}</p>
+      <p>${results[i].arbres_arrondissement}</p>
+      <button class="voir-plus-btn">Voir Plus</button>
+      <p class="description" style="display:none;">${results[i].com_descriptif}</p>
+      </div>
+      `;
         /* document.body.appendChild(liste); */
-        const description = document.createElement("p"); // crée un <p> qui contient la description
-        description.textContent = results[i].com_descriptif; // place le texte de la description dans le paragraphe. Textcontent est sûr car insère du texte brut et pas du HTML
-        description.style.display = "none"; // cache la description par défaut ( elle n'apparaitra pas tant qu'on ne change pas de style)
+        const bouton = liste.querySelector(".voir-plus-btn");
+        const description = liste.querySelector(".description");
+        
 
-        const bouton = document.createElement("button"); // crée un élément <button>
-        bouton.textContent = "Voir Plus"; // texte affiché sur le bouton
         bouton.addEventListener("click", () => {
           // qd on clique, on vérifie l'état d'affichage de 'description' et on bascule (block <-> none) et on met à jour le texte du bouton 'voir plus' 'voir moins'
           if (description.style.display === "none") {
@@ -58,11 +67,7 @@ async function fetchApi() {
             bouton.textContent = "Voir Plus"; // et remet le texte initial
           }
         });
-        liste.appendChild(description); //ajoute le <p> description à l'intérieur du <li>
-        /* document.body.appendChild(bouton); */
-        liste.appendChild(bouton); // ajoute le bouton dans le <li>
-        /* document.body.appendChild(liste); */
-        /*  div.appendChild(liste); */
+        
         resultsContainer.appendChild(liste);
       }
     }
@@ -73,15 +78,9 @@ async function fetchApi() {
       const searchTerm = searchBar.value.toLowerCase();
       const filterResults = dataReturn.results.filter(
         (arbre) =>
-          arbre.arbres_libellefrancais.toLowerCase().includes(
-            searchTerm
-          ) ||
-          arbre.arbres_adresse.toLowerCase().includes(
-            searchTerm
-          ) ||
-          arbre.arbres_arrondissement.toLowerCase().includes(
-            searchTerm
-          )
+          arbre.arbres_libellefrancais.toLowerCase().includes(searchTerm) ||
+          arbre.arbres_adresse.toLowerCase().includes(searchTerm) ||
+          arbre.arbres_arrondissement.toLowerCase().includes(searchTerm)
       );
       displayResults(filterResults);
     });

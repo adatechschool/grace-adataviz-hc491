@@ -21,15 +21,44 @@ async function fetchApi() {
     const searchBar = document.createElement("input");
     searchBar.type = "text";
     searchBar.id = "search-bar";
+    searchBar.placeholder = "Rechercher un type d'arbre...";
     searchContainer.appendChild(searchBar);
+
+    const suggestionsBox = document.createElement("div");
+    suggestionsBox.id = "suggestions";
+    searchContainer.appendChild(suggestionsBox);
+
+    const searchButton = document.createElement("button"); // création du bouton "rechercher"
+    searchButton.textContent = "Rechercher";
+    searchContainer.appendChild(searchButton);
 
     const resultsContainer = document.createElement("div");
     resultsContainer.id = "results";
     container.appendChild(resultsContainer);
 
-    const searchButton = document.createElement("button"); // création du bouton "rechercher"
-    searchButton.textContent = "Rechercher";
-    searchContainer.appendChild(searchButton);
+
+    searchBar.addEventListener("input", () => {
+      const term = searchBar.value.toLowerCase();
+      suggestionsBox.innerHTML = "";
+      if (term.length < 1) return; //n'affiche pas trop tôt
+      const suggestions = dataReturn.results.filter((arbre) =>
+        arbre.arbres_libellefrancais.toLowerCase().includes(term)
+      );
+
+      suggestions.slice(0, 5).forEach(arbre => {
+        const option = document.createElement("div");
+        option.classList.add("suggest-item");
+        option.textContent = arbre.arbres_libellefrancais;
+
+        option.addEventListener("click", () => {
+          searchBar.value = arbre.arbres_libellefrancais;
+          suggestionsBox.innerHTML = "";
+        });
+
+        suggestionsBox.appendChild(option);
+      });
+    });
+
 
     function displayResults(results) {
       // fonction pour afficher les résultats filtrés ou non
@@ -53,7 +82,6 @@ async function fetchApi() {
         /* document.body.appendChild(liste); */
         const bouton = liste.querySelector(".voir-plus-btn");
         const description = liste.querySelector(".description");
-        
 
         bouton.addEventListener("click", () => {
           // qd on clique, on vérifie l'état d'affichage de 'description' et on bascule (block <-> none) et on met à jour le texte du bouton 'voir plus' 'voir moins'
@@ -67,7 +95,7 @@ async function fetchApi() {
             bouton.textContent = "Voir Plus"; // et remet le texte initial
           }
         });
-        
+
         resultsContainer.appendChild(liste);
       }
     }
@@ -77,7 +105,7 @@ async function fetchApi() {
     searchButton.addEventListener("click", () => {
       const searchTerm = searchBar.value.toLowerCase();
       const filterResults = dataReturn.results.filter(
-        (arbre) =>
+        arbre =>
           arbre.arbres_libellefrancais.toLowerCase().includes(searchTerm) ||
           arbre.arbres_adresse.toLowerCase().includes(searchTerm) ||
           arbre.arbres_arrondissement.toLowerCase().includes(searchTerm)

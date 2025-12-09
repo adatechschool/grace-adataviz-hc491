@@ -22,11 +22,18 @@ async function fetchApi() {
     searchBar.type = "text";
     searchBar.id = "search-bar";
     searchBar.placeholder = "Rechercher un type d'arbre...";
-    searchContainer.appendChild(searchBar);
+    /* searchContainer.appendChild(searchBar); */
 
     const suggestionsBox = document.createElement("div");
     suggestionsBox.id = "suggestions";
-    searchContainer.appendChild(suggestionsBox);
+    /* searchContainer.appendChild(suggestionsBox); */
+
+    //création du wrapper pour l'input et les suggestions
+    const inputWrapper = document.createElement("div");
+    inputWrapper.id = "input-wrapper";
+    inputWrapper.appendChild(searchBar);
+    inputWrapper.appendChild(suggestionsBox);
+    searchContainer.appendChild(inputWrapper);
 
     const searchButton = document.createElement("button"); // création du bouton "rechercher"
     searchButton.textContent = "Rechercher";
@@ -36,32 +43,40 @@ async function fetchApi() {
     resultsContainer.id = "results";
     container.appendChild(resultsContainer);
 
-
+    // suggestions quand on tape
     searchBar.addEventListener("input", () => {
       const term = searchBar.value.toLowerCase();
-      suggestionsBox.innerHTML = "";
+      suggestionsBox.innerHTML = ""; // vide le conteneur avant de le remplir a nouveau
       if (term.length < 1) return; //n'affiche pas trop tôt
-      const suggestions = dataReturn.results.filter((arbre) =>
-        arbre.arbres_libellefrancais.toLowerCase().includes(term)
+      const suggestions = dataReturn.results.filter(
+        (
+          arbre // on filtre sur nom et adresse
+        ) =>
+          arbre.arbres_libellefrancais.toLowerCase().includes(term) ||
+          arbre.arbres_adresse.toLowerCase().includes(term)
       );
 
-      suggestions.slice(0, 5).forEach(arbre => {
+      suggestions.slice(0, 8).forEach((arbre) => {
+        // on garde 8 suggestions max
         const option = document.createElement("div");
         option.classList.add("suggest-item");
-        option.textContent = arbre.arbres_libellefrancais;
+
+        // affiche nom + adresse dans la suggestion
+        option.innerHTML = `<strong>${arbre.arbres_libellefrancais}</strong> - ${arbre.arbres_adresse} - ${arbre.arbres_arrondissement}`;
 
         option.addEventListener("click", () => {
           searchBar.value = arbre.arbres_libellefrancais;
           suggestionsBox.innerHTML = "";
+
+          displayResults([arbre]); // affiche seulement la fiche sélectionnée
         });
 
         suggestionsBox.appendChild(option);
       });
     });
 
-
+    // fonction pour afficher les résultats
     function displayResults(results) {
-      // fonction pour afficher les résultats filtrés ou non
       resultsContainer.innerHTML = ""; //vide les résultats précédents
       for (let i = 0; i < results.length; i++) {
         //boucle pour parcourir l'API
@@ -105,12 +120,13 @@ async function fetchApi() {
     searchButton.addEventListener("click", () => {
       const searchTerm = searchBar.value.toLowerCase();
       const filterResults = dataReturn.results.filter(
-        arbre =>
+        (arbre) =>
           arbre.arbres_libellefrancais.toLowerCase().includes(searchTerm) ||
           arbre.arbres_adresse.toLowerCase().includes(searchTerm) ||
           arbre.arbres_arrondissement.toLowerCase().includes(searchTerm)
       );
       displayResults(filterResults);
+      suggestionsBox.innerHTML = ""; // on vide et cache les suggestions
     });
 
     /* return dataReturn; */

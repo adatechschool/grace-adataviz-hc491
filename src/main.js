@@ -1,14 +1,11 @@
-//Déclare une fonction asynchrone nommée fetchApi
 async function fetchApi() {
   try {
-    //va chercher des données sur internet et attend qu'elles arrivent avt de continuer
     const response = await fetch(
       "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/arbresremarquablesparis/records?limit=20"
     );
-    const dataReturn = await response.json(); //lit la réponse et le convertit en objet JS décode le JSON/await car response.json() retourne une promesse
-    console.log(dataReturn); //Affiche objet JSON dans la console (utile pour inspecter la structure des données)
+    const dataReturn = await response.json();
 
-    const div = document.getElementById("app"); // récupère dans la page l'élement HTML qui a id=app
+    const div = document.getElementById("app");
 
     //création du CONTAINER principal
     const container = document.createElement("div");
@@ -84,7 +81,7 @@ async function fetchApi() {
     function displayResults(results) {
       resultsContainer.innerHTML = ""; //vide les résultats précédents
       for (let i = 0; i < results.length; i++) {
-        const liste = document.createElement("li"); // crée un élément <li> en mémoire ( pas encore inséré dans le DOM)
+        const liste = document.createElement("li");
         liste.classList.add("card");
 
         liste.innerHTML = `
@@ -103,7 +100,6 @@ async function fetchApi() {
         const description = liste.querySelector(".description");
 
         bouton.addEventListener("click", () => {
-          // qd on clique, on vérifie l'état d'affichage de 'description' et on bascule (block <-> none) et on met à jour le texte du bouton 'voir plus' 'voir moins'
           if (description.style.display === "none") {
             description.style.display = "block"; //rend visible la description
             bouton.textContent = "Voir Moins"; // change le libellé du bouton
@@ -119,13 +115,11 @@ async function fetchApi() {
 
     displayResults(dataReturn.results); //affiche tous les résultats au chargement
 
+    // Barre de recherche
     searchButton.addEventListener("click", () => {
       const searchTerm = searchBar.value.toLowerCase();
-      const filterResults = dataReturn.results.filter(
-        (arbre) =>
-          arbre.arbres_libellefrancais.toLowerCase().includes(searchTerm) ||
-          arbre.arbres_adresse.toLowerCase().includes(searchTerm) ||
-          arbre.arbres_arrondissement.toLowerCase().includes(searchTerm)
+      const filterResults = dataReturn.results.filter((arbre) =>
+        arbre.arbres_libellefrancais.toLowerCase().includes(searchTerm)
       );
       displayResults(filterResults);
       suggestionsBox.innerHTML = ""; // on vide et cache les suggestions

@@ -1,4 +1,4 @@
-/* Reset simple */
+
 * {
   margin: 0;
   padding: 0;
@@ -14,29 +14,31 @@ body {
   background-repeat: auto;
 }
 
-/* Barre de recherche centrée et stylisée */
-
+/* Conteneur de recherche */
 #search-container {
   display: flex;
-  flex-direction: row; /* bouton passe à droite */
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  position: relative; /* important pour positionner #suggestions */
+  position: relative;
   gap: 10px;
   margin-bottom: 25px;
 }
 
+/* Barre de recherche */
 #search-bar {
   width: 280px;
   padding: 12px 16px;
   border-radius: 25px;
-  border: 3px solid #2c7a59; /* bordure plus prononcée */
+  border: 3px solid #2c7a59;
   font-size: 1rem;
   font-weight: bold; /* texte en gras */
   outline: none;
   position: relative;
+
 }
 
+/* Bouton 'rechercher' */
 #search-container button {
   /* bouton "rechercher" */
   padding: 10px 16px;
@@ -45,16 +47,16 @@ body {
   border: none;
   border-radius: 25px;
   font-size: 0.95rem;
-  cursor: pointer;
+  cursor: pointer; /* indique visuellement que c'est cliquable */
 }
 
-/* Wrapper autour de l'input pour positionner correctement les suggestions */
+/* Wrapper pour input + suggestions */
 #input-wrapper {
   position: relative;
-  display: inline-block;
-}
+  display: inline-block; /* fait que la largeur du wrapper s'ajuste au contenu */
+} 
 
-
+/* Box de suggestions (auto-complétion) */
  #suggestions {
   position: absolute;
   top: 100%; /* pile sous l’input */
@@ -68,7 +70,7 @@ body {
   z-index: 20;
 } 
 
-
+/* items de suggestion */
 .suggest-item {
   padding: 10px;
   cursor: pointer;
@@ -88,10 +90,9 @@ body {
   align-items: center;
 }
 
-/* ----------- CARTES RECTANGLES ----------- */
+/* Cartes rectangles */
 .card {
   background: white;
-  border: 1px solid #d4d4d4;
   border-radius: 10px;
   border: 3px solid #2c7a59;
 
@@ -117,15 +118,15 @@ body {
   border: 3px solid #2c7a59;
 }
 
-/* Zone texte centrée verticalement + horizontalement */
+/* Contenu texte centrée verticalement + horizontalement */
 .card-content {
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center; /* texte centré */
-  justify-content: center; /* recentre verticalement */
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  gap: 6px; /* espace propre entre les lignes */
+  gap: 6px;
 }
 
 /* Titres */
@@ -146,7 +147,7 @@ body {
   cursor: pointer;
 }
 
-/* Description */
+/* Description du bouton 'voir plus' et 'voir moins'*/
 .description {
   display: none;
   margin-top: 10px;
@@ -156,11 +157,11 @@ body {
   width: 100%;
 }
 
-/* ----------- MOBILE ----------- */
+/* Mobile */
 @media (max-width: 700px) {
   .card {
     width: 95%;
-    min-width: unset;
+    min-width: unset; /* supprime la contrainte de largeur minimale gênante sur petits écrans */
     flex-direction: column;
     padding: 12px;
   }
@@ -179,7 +180,7 @@ body {
   }
 }
 
-/* ------------------ RESPONSIVE TABLETTE ------------------ */
+/* Responsive Tablette */
 @media (max-width: 1024px) {
   .card {
     width: 85%;
